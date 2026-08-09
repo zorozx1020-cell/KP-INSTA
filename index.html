@@ -104,7 +104,7 @@ body.lightMode{background:#f4f5f7;color:#15171b}body.lightMode .app{background:#
 <div class="messagesHead"><div class="sectionTitle">Messages</div><button id="messagesMoreBtn" class="iconBtn" onclick="openChatListMenu()"><svg class="i"><use href="#more"/></svg></button></div>
 <div class="notesSection"><div class="notesSectionTop"><b>Notes</b></div><div id="noteRow" class="noteRow"></div></div>
 <div id="chatList"></div><button class="createGroup" aria-label="Create group" title="Create group" onclick="openGroupCreate()"><svg class="i"><use href="#plus"/></svg></button></div>
-<div id="profileView" class="hide profilePage"><div class="profileHeader"><button class="iconBtn" onclick="toggleProfilePlus()"><svg class="i lg"><use href="#plus"/></svg></button><div class="profileHeaderTitle">Profile</div><button class="iconBtn" onclick="openSettings()" aria-label="Settings"><svg class="i"><use href="#settings"/></svg></button></div><div id="profilePlusMenu" class="profilePlusMenu hide"><button onclick="openPostModal()"><svg class="i sm"><use href="#image"/></svg><span>Add post</span></button><button onclick="openReelModal()"><svg class="i sm"><use href="#reels"/></svg><span>Add reel</span></button></div><div class="profileTop"><div class="noteWrap"><div id="myAvatar" class="avatar">😀</div><div id="myNoteBubble" class="noteBubble hide"></div></div><div class="profileInfo"><div class="profileName" id="name">@user</div><div class="handle" id="profileDetail">@user</div><div class="stats"><div class="stat"><b id="postsCount">0</b><span>Posts</span></div><button class="stat statButton" onclick="openFollowers()"><b id="followers">0</b><span>Followers</span></button><button class="stat statButton" onclick="openFollowing()"><b id="following">0</b><span>Following</span></button></div></div></div><div id="mybio" class="bio"></div><div class="profileActions"><button onclick="openEditProfile()">Edit profile</button><button onclick="editNote()">Add note</button><button onclick="showRequests()">Requests <span id="requestCount"></span></button></div><div class="profileTabs"><button id="profilePostsTab" class="active" onclick="showProfileTab('posts')"><svg class="i sm" style="display:inline-block;vertical-align:middle"><use href="#image"/></svg> Posts</button><button id="profileReelsTab" onclick="showProfileTab('reels')"><svg class="i sm" style="display:inline-block;vertical-align:middle"><use href="#reels"/></svg> Reels</button></div><div id="myPosts"></div><div id="myReels" class="hide"></div></div>
+<div id="profileView" class="hide profilePage"><div class="profileHeader"><button class="iconBtn" onclick="toggleProfilePlus()"><svg class="i lg"><use href="#plus"/></svg></button><div class="profileHeaderTitle">Profile</div><button class="iconBtn" onclick="openSettings()" aria-label="Settings"><svg class="i"><use href="#settings"/></svg></button></div><div id="profilePlusMenu" class="profilePlusMenu hide"><button onclick="openPostModal()"><svg class="i sm"><use href="#image"/></svg><span>Add post</span></button><button onclick="openReelModal()"><svg class="i sm"><use href="#reels"/></svg><span>Add reel</span></button></div><div class="profileTop"><div class="noteWrap"><div id="myAvatar" class="avatar">😀</div><div id="myNoteBubble" class="noteBubble hide"></div></div><div class="profileInfo"><div class="profileName" id="name">@user</div><div class="handle" id="profileDetail">@user</div><div class="stats"><div class="stat"><b id="postsCount">0</b><span>Posts</span></div><button class="stat statButton" onclick="openFollowers()"><b id="followers">0</b><span>Followers</span></button><button class="stat statButton" onclick="openFollowing()"><b id="following">0</b><span>Following</span></button></div></div></div><div id="mybio" class="bio"></div><div class="profileActions"><button onclick="openEditProfile()">Edit profile</button><button onclick="editNote()">Add note</button><button onclick="showRequests()">Requests <span id="requestCount"></span></button><button onclick="openSettings()">⚙️ Settings</button></div><div class="profileTabs"><button id="profilePostsTab" class="active" onclick="showProfileTab('posts')"><svg class="i sm" style="display:inline-block;vertical-align:middle"><use href="#image"/></svg> Posts</button><button id="profileReelsTab" onclick="showProfileTab('reels')"><svg class="i sm" style="display:inline-block;vertical-align:middle"><use href="#reels"/></svg> Reels</button></div><div id="myPosts"></div><div id="myReels" class="hide"></div></div>
 </section>
 
 
@@ -126,6 +126,10 @@ body.lightMode{background:#f4f5f7;color:#15171b}body.lightMode .app{background:#
 <label class="settingRow"><span>Follows</span><input id="setFollows" type="checkbox" checked onchange="saveNotificationSetting('follows',this.checked)"></label>
 <label class="settingRow"><span>Message / Ringtone Sounds</span><input id="soundEnabled" type="checkbox" checked onchange="saveRPSetting('soundEnabled',this.checked)"></label>
 <label class="settingRow"><span>Do Not Disturb</span><input id="dndMode" type="checkbox" onchange="saveRPSetting('dndMode',this.checked)"></label></div>
+<div class="card"><h3>Reels & Video</h3>
+<label class="settingRow"><span>Reels Sound</span><input id="reelsSoundEnabled" type="checkbox" checked onchange="saveReelsSetting('reelsSoundEnabled',this.checked)"></label>
+<label class="settingRow"><span>Autoplay Reels</span><input id="reelsAutoplay" type="checkbox" checked onchange="saveReelsSetting('reelsAutoplay',this.checked)"></label>
+</div>
 <div class="card"><h3>Display & Theme</h3><div class="settingRow"><span>Dark / Light Mode</span><div><button class="smallBtn" onclick="setAppearance('dark')">Dark</button> <button class="smallBtn" onclick="setAppearance('light')">Light</button></div></div>
 <div class="field" style="margin-top:10px"><label>Phone Wallpaper URL</label><input id="wallpaperUrl" class="field" placeholder="https://..."></div><button class="smallBtn" onclick="saveWallpaper()">Save Wallpaper</button></div>
 <div class="card"><h3>Chat Settings</h3>
@@ -235,7 +239,7 @@ window.openReelModal=()=>{$('profilePlusMenu')?.classList.add('hide');$('reelVid
 function reelHTML(r, index=0){
   let author=r.author||r, liked=(r.likes||[]).includes(me.uid), count=(r.likes||[]).length;
   return `<article class="reelScreen" data-reel-id="${escapeAttr(r.id)}" data-index="${index}">
-    <video class="reelVideo" src="${escapeAttr(r.videoUrl)}" playsinline preload="metadata" muted></video>
+    <video class="reelVideo" src="${escapeAttr(r.videoUrl)}" playsinline webkit-playsinline preload="metadata" muted></video>
     <div class="reelShade"></div>
     <div class="reelTopBar"><button type="button" class="reelBack" aria-label="Back"><svg class="i"><use href="#back"/></svg></button><div class="reelTopTitle">Reels</div></div>${r.uid===me.uid?`<button type="button" class="reelDeleteTop" data-delete-reel="${escapeAttr(r.id)}">${svg('trash','i sm')}</button>`:''}
     <button type="button" class="reelSound" aria-label="Toggle sound"><svg class="i sm"><use href="#mute"/></svg></button>
@@ -262,31 +266,34 @@ async function renderReels(){
       let id=screen.dataset.reelId, r=fresh.find(x=>x.id===id), v=screen.querySelector('.reelVideo'), sound=screen.querySelector('.reelSound'), pause=screen.querySelector('.reelPauseIcon');
       screen.querySelector('.reelBack').onclick=e=>{e.stopPropagation();mainView('home')};
       screen.querySelector('.reelAuthor').onclick=async e=>{e.stopPropagation();let u=await getUser(screen.querySelector('.reelAuthor').dataset.uid);if(u)openUserProfile(u)};
+      const soundPref=localStorage.getItem('kp-reels-sound')!=='off';
+      const autoplayPref=localStorage.getItem('kp-reels-autoplay')!=='off';
       const updateSound=()=>{sound.innerHTML=svg(v.muted?'mute':'volume','i sm');sound.setAttribute('aria-label',v.muted?'Turn sound on':'Turn sound off')};
       updateSound();
-      sound.onclick=async e=>{
-        e.preventDefault(); e.stopPropagation();
-        try{
-          v.muted=false; v.volume=1;
-          await v.play();
-        }catch(err){
-          // Keep the explicit user tap as the gesture; if playback is blocked, retry muted and show the state.
-          try{v.muted=true; await v.play();}catch(_){ }
-        }
-        updateSound();
+      const enableSound=async()=>{
+        try{v.muted=false;v.volume=1;await v.play();updateSound();return true}
+        catch(err){v.muted=true;updateSound();return false}
       };
+      sound.onclick=async e=>{e.preventDefault();e.stopPropagation();if(v.muted)await enableSound();else{v.muted=true;updateSound()}};
       screen.querySelector('.reelLike').onclick=async e=>{e.stopPropagation();let was=(r.likes||[]).includes(me.uid);await updateDoc(doc(db,'reels',id),{likes:was?arrayRemove(me.uid):arrayUnion(me.uid)});r.likes=was?(r.likes||[]).filter(x=>x!==me.uid):[...(r.likes||[]),me.uid];let b=screen.querySelector('.reelLike');b.classList.toggle('liked',!was);b.querySelector('span').textContent=(r.likes||[]).length;if(!was&&r.uid)await notifyUser(r.uid,'likes',`@${me.username||'user'} liked your reel`,null)};
       screen.querySelector('.reelComment').onclick=e=>{e.stopPropagation();openReelComments(id)};
       screen.querySelector('.reelShare').onclick=e=>{e.stopPropagation();openReelShare(r)};
-      screen.addEventListener('click',e=>{if(e.target.closest('button')||e.target.closest('.reelAuthor'))return;if(v.paused){v.play().then(()=>screen.classList.remove('paused')).catch(()=>{})}else{v.pause();screen.classList.add('paused')}});
+      screen.addEventListener('click',async e=>{if(e.target.closest('button')||e.target.closest('.reelAuthor'))return;if(v.paused){if(soundPref&&v.muted)await enableSound();else v.play().catch(()=>{});screen.classList.remove('paused')}else{v.pause();screen.classList.add('paused')}});
       v.addEventListener('play',()=>screen.classList.remove('paused'));v.addEventListener('pause',()=>screen.classList.add('paused'));
     });
-    let io=new IntersectionObserver(entries=>entries.forEach(entry=>{let screen=entry.target,v=screen.querySelector('.reelVideo');if(entry.isIntersecting&&entry.intersectionRatio>.65){box.querySelectorAll('.reelVideo').forEach(x=>{if(x!==v)x.pause()});v.play().catch(()=>{});let id=screen.dataset.reelId,r=fresh.find(x=>x.id===id);if(r&&!(r.views||[]).includes(me.uid)){updateDoc(doc(db,'reels',id),{views:arrayUnion(me.uid)}).then(()=>{r.views=[...(r.views||[]),me.uid];let badge=screen.querySelector('.reelViewsBadge');if(badge)badge.textContent=`${r.views.length} views`}).catch(()=>{})}}else{v.pause()}}),{threshold:[.65]});
+    let io=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      let screen=entry.target,v=screen.querySelector('.reelVideo');
+      if(entry.isIntersecting&&entry.intersectionRatio>.65){
+        box.querySelectorAll('.reelVideo').forEach(x=>{if(x!==v){x.pause();x.muted=true}});
+        if(autoplayPref){v.muted=true;v.play().catch(()=>{})}
+        let id=screen.dataset.reelId,r=fresh.find(x=>x.id===id);if(r&&!(r.views||[]).includes(me.uid)){updateDoc(doc(db,'reels',id),{views:arrayUnion(me.uid)}).then(()=>{r.views=[...(r.views||[]),me.uid];let badge=screen.querySelector('.reelViewsBadge');if(badge)badge.textContent=`${r.views.length} views`}).catch(()=>{})}
+      }else{v.pause()}
+    }),{threshold:[.65]});
     box.querySelectorAll('.reelScreen').forEach(x=>io.observe(x));
   }catch(e){box.innerHTML=`<div class="reelEmpty error">${escapeHtml(e.message)}</div>`}
 }
 window.showProfileTab=async tab=>{let p=$('myPosts'),r=$('myReels'),pt=$('profilePostsTab'),rt=$('profileReelsTab');if(tab==='reels'){p.classList.add('hide');r.classList.remove('hide');pt.classList.remove('active');rt.classList.add('active');await renderMyReels()}else{r.classList.add('hide');p.classList.remove('hide');rt.classList.remove('active');pt.classList.add('active');await renderMyPosts()}};
-async function renderMyReels(){let box=$('myReels');if(!box)return;let s=await getDocs(query(collection(db,'reels'),where('uid','==',me.uid)));let arr=[];s.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(!arr.length){box.innerHTML='<div class="empty">No reels yet.</div>';return}let fresh=await hydratePostAuthors(arr);box.innerHTML=fresh.map((r,i)=>`<div class="card" style="margin-bottom:12px">${reelHTML(r,i)}</div>`).join('');box.querySelectorAll('.reelScreen').forEach(screen=>{screen.style.height='420px';screen.style.minHeight='420px';let id=screen.dataset.reelId,r=fresh.find(x=>x.id===id),v=screen.querySelector('.reelVideo'),btn=screen.querySelector('.reelSound');btn.onclick=e=>{e.stopPropagation();v.muted=!v.muted;btn.innerHTML=svg(v.muted?'mute':'volume','i sm')};screen.onclick=e=>{if(e.target.closest('button')||e.target.closest('.reelAuthor'))return;if(v.paused)v.play().catch(()=>{});else v.pause()};screen.querySelector('.reelLike').onclick=async e=>{e.stopPropagation();let was=(r.likes||[]).includes(me.uid);await updateDoc(doc(db,'reels',id),{likes:was?arrayRemove(me.uid):arrayUnion(me.uid)});r.likes=was?(r.likes||[]).filter(x=>x!==me.uid):[...(r.likes||[]),me.uid];let b=screen.querySelector('.reelLike');b.classList.toggle('liked',!was);b.querySelector('span').textContent=r.likes.length;if(!was&&r.uid)await notifyUser(r.uid,'likes',`@${me.username||'user'} liked your reel`,null)};screen.querySelector('.reelComment').onclick=e=>{e.stopPropagation();openReelComments(id)};screen.querySelector('.reelShare').onclick=e=>{e.stopPropagation();openReelShare(r)}})}
+async function renderMyReels(){let box=$('myReels');if(!box)return;let s=await getDocs(query(collection(db,'reels'),where('uid','==',me.uid)));let arr=[];s.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(!arr.length){box.innerHTML='<div class="empty">No reels yet.</div>';return}let fresh=await hydratePostAuthors(arr);box.innerHTML=fresh.map((r,i)=>`<div class="card" style="margin-bottom:12px">${reelHTML(r,i)}</div>`).join('');box.querySelectorAll('.reelScreen').forEach(screen=>{screen.style.height='420px';screen.style.minHeight='420px';let id=screen.dataset.reelId,r=fresh.find(x=>x.id===id),v=screen.querySelector('.reelVideo'),btn=screen.querySelector('.reelSound');btn.onclick=async e=>{e.stopPropagation();if(v.muted){try{v.muted=false;v.volume=1;await v.play()}catch(_){v.muted=true}}else v.muted=true;btn.innerHTML=svg(v.muted?'mute':'volume','i sm')};screen.onclick=async e=>{if(e.target.closest('button')||e.target.closest('.reelAuthor'))return;if(v.paused){if(localStorage.getItem('kp-reels-sound')!=='off'&&v.muted){try{v.muted=false;v.volume=1;await v.play()}catch(_){v.muted=true;await v.play().catch(()=>{})}}else v.play().catch(()=>{})}else v.pause()};screen.querySelector('.reelLike').onclick=async e=>{e.stopPropagation();let was=(r.likes||[]).includes(me.uid);await updateDoc(doc(db,'reels',id),{likes:was?arrayRemove(me.uid):arrayUnion(me.uid)});r.likes=was?(r.likes||[]).filter(x=>x!==me.uid):[...(r.likes||[]),me.uid];let b=screen.querySelector('.reelLike');b.classList.toggle('liked',!was);b.querySelector('span').textContent=r.likes.length;if(!was&&r.uid)await notifyUser(r.uid,'likes',`@${me.username||'user'} liked your reel`,null)};screen.querySelector('.reelComment').onclick=e=>{e.stopPropagation();openReelComments(id)};screen.querySelector('.reelShare').onclick=e=>{e.stopPropagation();openReelShare(r)}})}
 
 async function relationship(target){let u=await getUser(target.uid);if(!u)return{target:null,following:false,pending:false};return{target:u,following:(me.following||[]).includes(target.uid),pending:(u.followRequests||[]).includes(me.uid)}}
 window.openUserProfile=async target=>{let u=await getUser(target.uid);if(!u)return;profileUser=u;go('userProfile');$('main').classList.add('hide');$('nav').classList.add('hide');renderAvatar($('upav'),u);$('upname').textContent='@'+u.username;$('upbio').textContent=u.bio||'No bio yet';$('upfollowers').textContent=(u.followers||[]).length;$('upfollowing').textContent=(u.following||[]).length;let r=await relationship(u);$('upFollow').textContent=r.following?'Following':r.pending?'Requested':'Follow';$('upFollow').onclick=()=>toggleFollow(u);$('upMessage').onclick=()=>openChat(u);$('upstatus').textContent=r.following?'You are following this user.':r.pending?'Follow request sent.':''};
@@ -338,8 +345,21 @@ async function openGroupChat(g){
    Object.entries(t).forEach(([uid,ts])=>{if(uid!==me.uid&&ts){let ms=ts.toMillis?ts.toMillis():0;if(now-ms<3500)names.push('@'+(d.typingNames?.[uid]||'user'));}});
    const el=$('liveTyping');if(el){el.classList.toggle('hide',!names.length);el.innerHTML=names.length?`${escapeHtml(names.join(', '))} ${typingHTML(names)}`:'';}
  });
- groupMsgStop=onSnapshot(query(collection(db,'groupChats',gid,'messages'),orderBy('createdAt','asc')),async snap=>{
-   await markGroupSeen(gid,snap);renderGroupMessages(snap);
+ groupMsgStop=onSnapshot(collection(db,'groupChats',gid,'messages'),async snap=>{
+   // Do not rely on a Firestore orderBy here: older KPRP messages may not have
+   // createdAt yet, and orderBy can silently exclude those documents.
+   const docs=[];snap.forEach(d=>docs.push(d));
+   docs.sort((a,b)=>{
+     const ta=a.data()?.createdAt?.seconds||a.data()?.createdAt?.toMillis?.()/1000||0;
+     const tb=b.data()?.createdAt?.seconds||b.data()?.createdAt?.toMillis?.()/1000||0;
+     return ta-tb || a.id.localeCompare(b.id);
+   });
+   const ordered={forEach(fn){docs.forEach(fn)}};
+   await markGroupSeen(gid,ordered);renderGroupMessages(ordered);
+ },err=>{
+   console.error('KPRP group messages listener failed',err);
+   const box=$('msgs');
+   if(box) box.innerHTML='<div class="empty error">KPRP messages could not be loaded. Please try again.</div>';
  });
 }
 async function markGroupSeen(gid,snap){
@@ -417,7 +437,8 @@ window.send=async()=>{
 };
 window.sendImage=async()=>{let url=$('mimg').value.trim();if(!url)return;if(currentGroup){let gid=groupId(currentGroup);await addDoc(collection(db,'groupChats',gid,'messages'),{from:me.uid,username:me.username,emoji:me.emoji||'😀',avatarUrl:me.avatarUrl||'',imageUrl:url,createdAt:serverTimestamp()});await updateDoc(doc(db,'groupChats',gid),{lastMessage:'📷 Photo',lastAt:serverTimestamp()}).catch(()=>{});}else if(chatUser){let id=chatId(me.uid,chatUser.uid);await addDoc(collection(db,'chats',id,'messages'),{from:me.uid,to:chatUser.uid,imageUrl:url,createdAt:serverTimestamp()});await setDoc(doc(db,'chats',id),{participants:[me.uid,chatUser.uid],lastMessage:'📷 Photo',lastSender:me.uid,lastAt:serverTimestamp(),unreadFor:chatUser.uid},{merge:true})}$('mimg').value='';$('chatImgPanel').classList.add('hide')};
 window.toggleChatEmoji=()=>{$('chatImgPanel').classList.add('hide');$('chatEmojiPanel').classList.toggle('hide')};window.toggleChatImage=()=>{$('chatEmojiPanel').classList.add('hide');$('chatImgPanel').classList.toggle('hide')};window.togglePostEmoji=()=>{postEmojiOpen=!postEmojiOpen;$('postEmojiGrid').classList.toggle('hide',!postEmojiOpen)};
-window.openSettings=()=>{go('settings');$('main').classList.add('hide');$('nav').classList.add('hide');$('logoTextInput').value=localStorage.getItem('kp-logo-text')||'KP Insta';loadNotificationSettings();let c=me?.chatSettings||{};['activeStatus','privateAccount','soundEnabled','dndMode','reactionsEnabled','typingEnabled','readReceipts'].forEach(k=>{let e=$(k);if(e)e.checked=c[k]!==false});let f=$( 'fontSize');if(f)f.value=c.fontSize||14;let w=$('wallpaperUrl');if(w)w.value=localStorage.getItem('kp-wallpaper')||''};window.saveLogoText=()=>{let t=$('logoTextInput').value.trim()||'KP Insta';localStorage.setItem('kp-logo-text',t);document.querySelectorAll('.wordmark').forEach(x=>x.textContent=t)};document.querySelectorAll('.wordmark').forEach(x=>x.textContent=localStorage.getItem('kp-logo-text')||'KP Insta');window.saveRPSetting=(k,v)=>{me.chatSettings=me.chatSettings||{};me.chatSettings[k]=v;updateDoc(doc(db,'users',me.uid),{[`chatSettings.${k}`]:v}).catch(()=>{});};
+window.openSettings=()=>{go('settings');$('main').classList.add('hide');$('nav').classList.add('hide');loadNotificationSettings();let c=me?.chatSettings||{};['activeStatus','privateAccount','soundEnabled','dndMode','reactionsEnabled','typingEnabled','readReceipts'].forEach(k=>{let e=$(k);if(e)e.checked=c[k]!==false});let rs=$('reelsSoundEnabled');if(rs)rs.checked=localStorage.getItem('kp-reels-sound')!=='off';let ra=$('reelsAutoplay');if(ra)ra.checked=localStorage.getItem('kp-reels-autoplay')!=='off';let f=$('fontSize');if(f)f.value=c.fontSize||14;let w=$('wallpaperUrl');if(w)w.value=localStorage.getItem('kp-wallpaper')||''};window.saveLogoText=()=>{let t=$('logoTextInput').value.trim()||'KP Insta';localStorage.setItem('kp-logo-text',t);document.querySelectorAll('.wordmark').forEach(x=>x.textContent=t)};document.querySelectorAll('.wordmark').forEach(x=>x.textContent=localStorage.getItem('kp-logo-text')||'KP Insta');window.saveRPSetting=(k,v)=>{me.chatSettings=me.chatSettings||{};me.chatSettings[k]=v;updateDoc(doc(db,'users',me.uid),{[`chatSettings.${k}`]:v}).catch(()=>{})};
+window.saveReelsSetting=(k,v)=>{localStorage.setItem(k==='reelsSoundEnabled'?'kp-reels-sound':'kp-reels-autoplay',v?'on':'off')};
 window.changePassword=async()=>{let p=prompt('Enter new password (minimum 6 characters):');if(!p)return;if(p.length<6)return alert('Password must be at least 6 characters.');try{await updatePassword(auth.currentUser,p);alert('Password changed successfully.')}catch(e){alert('Please log in again before changing the password.')}};
 window.switchCharacter=()=>alert('Character switcher: choose another RP character connected to this account.');
 window.blockedPlayers=()=>alert('Blocked Players list is available here. Add or remove character IDs from your blocked list.');
